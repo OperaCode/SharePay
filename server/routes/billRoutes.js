@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.post("/create-bill", createBill);
 router.get("/", getBills);
-router.get("/:id", getBillById);
-router.put("/:id/pay", updatePaymentStatus);
+router.get("/:billId", getBillById);
+router.put("/:billId/pay", updatePaymentStatus);
 
 module.exports = router;

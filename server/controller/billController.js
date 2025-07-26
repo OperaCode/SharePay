@@ -4,31 +4,43 @@ const Bill = require("../models/bill");
 const createBill = async (req, res) => {
   try {
     const { title, totalAmount, currency, participants, createdBy } = req.body;
-    console.log(req.body);
+    console.log("Incoming bill data:", req.body);
 
-    const splitAmount = totalAmount / participants.length;
+    // to ensure bill creator is included in participants
+    let updatedParticipants = [...participants];
+
+    const creatorAlreadyIncluded = participants.some(
+      (p) => p.walletAddress.toLowerCase() === createdBy.toLowerCase()
+    );
+
+    if (!creatorAlreadyIncluded) {
+      updatedParticipants.push({ walletAddress: createdBy });
+    }
+
+    const splitAmount = totalAmount / updatedParticipants.length;
 
     const newBill = new Bill({
       title,
       totalAmount,
       currency,
       createdBy,
-      participants: participants.map((p) => ({
+      participants: updatedParticipants.map((p) => ({
         walletAddress: p.walletAddress,
-        amount:splitAmount,
+        amount: splitAmount,
         hasPaid: false,
         txHash: null,
       })),
     });
 
     await newBill.save();
-    console.log(newBill);
+    console.log("New bill saved:", newBill);
     res.status(201).json({ success: true, bill: newBill });
   } catch (err) {
     console.error("Error creating bill:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 
 // Get all bills for a wallet
 const getBills = async (req, res) => {
@@ -59,6 +71,9 @@ const getBillById = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+
+
 
 // Mark participant as paid
 const updatePaymentStatus = async (req, res) => {
