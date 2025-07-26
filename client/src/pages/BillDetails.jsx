@@ -1,88 +1,60 @@
-// src/pages/BillDetails.jsx
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useAccount } from "wagmi";
+import { useParams } from "react-router-dom";
 
 const BillDetails = () => {
-  const { id } = useParams();
-  const { address } = useAccount(); // wallet address
+  const { billId } = useParams();
   const [bill, setBill] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isPaying, setIsPaying] = useState(false);
 
   useEffect(() => {
     const fetchBill = async () => {
       try {
-        const res = await axios.get(`/api/bills/${id}`);
-        setBill(res.data);
-      } catch (error) {
-        console.error("Failed to load bill:", error);
+        const res = await axios.get(`http://localhost:5000/api/bills/detail/${billId}`);
+        setBill(res.data.bill);
+      } catch (err) {
+        console.error("Error fetching bill:", err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchBill();
-  }, [id]);
+  }, [billId]);
 
-  const handlePayment = async () => {
-    if (!address) return alert("Connect your wallet first");
-    setIsPaying(true);
+  if (loading) return <div className="p-6">Loading...</div>;
+  if (!bill) return <div className="p-6">Bill not found.</div>;
 
-    try {
-      // TODO: Integrate Wagmi+Ethers payment logic here
-      console.log("Initiate payment for:", bill._id);
-
-      // Simulate API call or smart contract call
-      await axios.post(`/api/bills/${bill._id}/pay`, {
-        payer: address,
-      });
-
-      alert("Payment successful!");
-      window.location.reload();
-    } catch (err) {
-      console.error("Payment failed:", err);
-      alert("Payment failed. See console for details.");
-    } finally {
-      setIsPaying(false);
-    }
-  };
-
-  if (loading) return <div className="text-center py-8">Loading...</div>;
-  if (!bill) return <div className="text-center py-8 text-red-500">Bill not found</div>;
+  const allPaid = bill.participants.every((p) => p.hasPaid === true);
+  const status = allPaid ? "Closed" : "Open";
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-4">{bill.title}</h2>
-      <p className="text-gray-400 mb-2">Created by: {bill.creator}</p>
-      <p className="mb-6">
-        Total Amount: <span className="font-semibold">{bill.amount} ETH</span>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-2">{bill.title}</h2>
+      <p className="text-gray-700">Total: {bill.totalAmount} {bill.currency}</p>
+      <p className="text-gray-700">Created by: {bill.createdBy}</p>
+      <p className="text-sm mt-2">
+        Status: <span className={`font-semibold ${status === "Closed" ? "text-green-600" : "text-orange-500"}`}>{status}</span>
       </p>
 
-      <h3 className="text-lg font-semibold mb-2">Participants</h3>
-      <ul className="bg-gray-800 rounded-lg divide-y divide-gray-700">
-        {bill.participants.map((p, idx) => (
-          <li key={idx} className="p-4 flex justify-between">
-            <span>{p.address}</span>
-            <span className={p.paid ? "text-green-400" : "text-red-400"}>
-              {p.paid ? "✅ Paid" : "❌ Unpaid"}
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-6 flex justify-end">
-        {!bill.isPaid && (
-          <button
-            disabled={isPaying}
-            className={`${
-              isPaying ? "bg-gray-600 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-            } text-white font-medium px-6 py-2 rounded-lg`}
-            onClick={handlePayment}
+      <h3 className="text-xl font-semibold mt-6 mb-2">Participants</h3>
+      <div className="space-y-4">
+        {bill.participants.map((participant, index) => (
+          <div
+            key={index}
+            className={`p-4 border rounded ${participant.hasPaid ? "border-green-400" : "border-red-300"}`}
           >
-            {isPaying ? "Processing..." : "Pay Now"}
-          </button>
-        )}
+            <p className="font-mono">{participant.walletAddress}</p>
+            <p>Status: 
+              <span className={`ml-2 font-semibold ${participant.hasPaid ? "text-green-600" : "text-red-600"}`}>
+                {participant.hasPaid ? "Paid" : "Pending"}
+              </span>
+            </p>
+            {participant.hasPaid && (
+              <p className="text-sm text-gray-500">TxHash: {participant.txHash}</p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
