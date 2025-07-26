@@ -3,8 +3,8 @@ const Bill = require("../models/bill");
 // Create a new bill
 const createBill = async (req, res) => {
   try {
-    const { title, totalAmount, currency, participants, creator } = req.body;
-    console.log(req.body)
+    const { title, totalAmount, currency, participants, createdBy } = req.body;
+    console.log(req.body);
 
     const splitAmount = totalAmount / participants.length;
 
@@ -12,17 +12,17 @@ const createBill = async (req, res) => {
       title,
       totalAmount,
       currency,
-      creator,
-      participants: participants.map(address => ({
-        address,
-        amountOwed: splitAmount,
+      createdBy,
+      participants: participants.map((p) => ({
+        walletAddress: p.walletAddress,
+        amount:splitAmount,
         hasPaid: false,
         txHash: null,
       })),
     });
 
     await newBill.save();
-    console.log(newBill)
+    console.log(newBill);
     res.status(201).json({ success: true, bill: newBill });
   } catch (err) {
     console.error("Error creating bill:", err);
@@ -49,7 +49,10 @@ const getBills = async (req, res) => {
 const getBillById = async (req, res) => {
   try {
     const bill = await Bill.findById(req.params.id);
-    if (!bill) return res.status(404).json({ success: false, message: "Bill not found" });
+    if (!bill)
+      return res
+        .status(404)
+        .json({ success: false, message: "Bill not found" });
     res.json({ success: true, bill });
   } catch (err) {
     console.error("Error fetching bill:", err);
@@ -64,10 +67,18 @@ const updatePaymentStatus = async (req, res) => {
     const { address, txHash } = req.body;
 
     const bill = await Bill.findById(billId);
-    if (!bill) return res.status(404).json({ success: false, message: "Bill not found" });
+    if (!bill)
+      return res
+        .status(404)
+        .json({ success: false, message: "Bill not found" });
 
-    const participant = bill.participants.find(p => p.address.toLowerCase() === address.toLowerCase());
-    if (!participant) return res.status(400).json({ success: false, message: "Not a participant" });
+    const participant = bill.participants.find(
+      (p) => p.address.toLowerCase() === address.toLowerCase()
+    );
+    if (!participant)
+      return res
+        .status(400)
+        .json({ success: false, message: "Not a participant" });
 
     participant.hasPaid = true;
     participant.txHash = txHash;

@@ -1,17 +1,19 @@
 const mongoose = require("mongoose");
 
 const participantSchema = new mongoose.Schema({
-  walletAddress: String,
+  walletAddress: { type: String, required: true },
+   amount: { type: Number, required: true },
   hasPaid: { type: Boolean, default: false },
-  txHash: String,
+  txHash: { type: String, default: null },
 });
 
 const billSchema = new mongoose.Schema({
-  title: String,
-  totalAmount: Number,
+  title: { type: String, required: true },
+  totalAmount: { type: Number, required: true },
   currency: { type: String, default: "ETH" },
-  createdBy: String,
-  participants: [participantSchema],
+  createdBy: { type: String, required: true },
+  participants: { type: [participantSchema], required: true },
+  status: { type: String, enum: ["Open", "Closed"], default: "Open" },
   createdAt: { type: Date, default: Date.now },
 });
 
