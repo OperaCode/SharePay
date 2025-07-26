@@ -52,17 +52,12 @@ const Home = () => {
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 md:px-8 py-8 bg-gray-950/50 backdrop-blur-md">
         <h1 className="text-4xl p-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
-          {" "}
-          Split3
+         
+          SharePay
         </h1>
         <nav className="flex space-x-4 sm:space-x-6 p-2">
           
-          <Link
-            to="/about"
-            className="text-gray-300 hover:text-cyan-300 transition-colors duration-200"
-          >
-            Bills Log
-          </Link>
+          
           <Link
             to="/create"
             className="text-gray-300 hover:text-cyan-300 transition-colors duration-200"
@@ -82,7 +77,7 @@ const Home = () => {
 
       <section className="mt-28 relative z-10 p-2">
         <h1 className=" sm:text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
-          Welcome to Split3 👋
+          Welcome to SharePay 👋
         </h1>
         <p className="text-gray-400 sm:text-sm">
           {isConnected

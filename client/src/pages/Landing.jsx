@@ -49,17 +49,12 @@ const Landing = () => {
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 md:px-8 py-4 bg-gray-950/50 backdrop-blur-md">
         <Link to="/" className="text-4xl p-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
-          Split3
+          SharePay
         </Link>
         <nav className="flex space-x-4 sm:space-x-6">
-          {/* <Link to="/features" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
-            Features
-          </Link>
-          <Link to="/about" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
-            About
-          </Link> */}
+         
           <Link to="/home" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200 font-bold">
-            Explore Split3
+            Explore SharePay
           </Link>
         </nav>
       </header>
@@ -74,7 +69,7 @@ const Landing = () => {
           className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600"
           variants={itemVariants}
         >
-          Welcome to <span className="text-cyan-300">Split3</span>
+          Welcome to <span className="text-cyan-300">SharePay</span>
         </motion.h1>
         <motion.p
           className="text-lg sm:text-xl md:text-2xl text-center max-w-3xl mb-10 text-gray-300 leading-relaxed font-medium"

@@ -87,8 +87,8 @@ const CreateBill = () => {
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 md:px-8 py-8 bg-gray-950/50 backdrop-blur-md">
         <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
-          {" "}
-          Split3
+         
+          SharePay
         </h1>
         <nav className="flex space-x-4 sm:space-x-6">
           <Link
