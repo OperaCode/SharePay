@@ -52,13 +52,13 @@ const Landing = () => {
           Split3
         </Link>
         <nav className="flex space-x-4 sm:space-x-6">
-          <Link to="/features" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
+          {/* <Link to="/features" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
             Features
           </Link>
           <Link to="/about" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
             About
-          </Link>
-          <Link to="/home" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
+          </Link> */}
+          <Link to="/home" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200 font-bold">
             Explore Split3
           </Link>
         </nav>

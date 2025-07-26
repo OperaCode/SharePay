@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
+import { useSendTransaction, useAccount } from "wagmi";
+import { parseEther } from "viem";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -13,8 +15,17 @@ const BillDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+//   const { address: currentUserAddress } = useAccount();
+  const { address: currentUserAddress, isConnected } = useAccount();
+  const {
+  data: txData,
+  sendTransaction,
+  isPending,
+  error: txError,
+} = useSendTransaction();
 
-//   fetch bills
+
+  //   fetch bills
   useEffect(() => {
     const fetchBill = async () => {
       try {
@@ -33,10 +44,36 @@ const BillDetails = () => {
     fetchBill();
   }, [billId]);
 
+  const handlePay = async (amount) => {
+  if (!sendTransaction || !currentUserAddress) return;
 
-const handlePay = ()=>{
-    
-}
+  try {
+    sendTransaction(
+      {
+        to: bill.createdBy,
+        value: parseEther(amount.toString()),
+      },
+      {
+        onSuccess: async (tx) => {
+          console.log("Transaction sent:", tx.hash);
+
+          await axios.post(`${BASE_URL}/bills/${billId}/pay`, {
+            walletAddress: currentUserAddress,
+            txHash: tx.hash,
+          });
+
+          const res = await axios.get(`${BASE_URL}/bills/${billId}`);
+          setBill(res.data.bill);
+        },
+        onError: (err) => {
+          console.error("Transaction error:", err);
+        },
+      }
+    );
+  } catch (err) {
+    console.error("Unexpected payment error:", err);
+  }
+};
 
 
   if (loading)
@@ -184,12 +221,28 @@ const handlePay = ()=>{
 
               {/* CTA- Pay Now */}
               <div className="">
-                <a
-                  href="/#payment"
-                  className="p-2 bg-red-900 text-white rounded-md "
-                >
-                  Pay Now
-                </a>
+                {participant.walletAddress.toLowerCase() ===
+                  currentUserAddress?.toLowerCase() && (
+                  <button
+                    className={`px-3 py-1 rounded ${
+                      !currentUserAddress || participant.hasPaid
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-green-500 hover:bg-green-600 text-white"
+                    }`}
+                    onClick={() => {
+                      if (currentUserAddress && !participant.hasPaid) {
+                        handlePay(participant.amount);
+                      }
+                    }}
+                    disabled={!currentUserAddress || participant.hasPaid}
+                  >
+                    {participant.hasPaid
+                      ? "Paid"
+                      : !currentUserAddress
+                      ? "Connect Wallet"
+                      : "Pay Now"}
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}
