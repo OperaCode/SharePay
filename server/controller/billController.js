@@ -1,9 +1,10 @@
 const Bill = require("../models/bill");
 
 // Create a new bill
-exports.createBill = async (req, res) => {
+const createBill = async (req, res) => {
   try {
     const { title, totalAmount, currency, participants, creator } = req.body;
+    console.log(req.body)
 
     const splitAmount = totalAmount / participants.length;
 
@@ -21,6 +22,7 @@ exports.createBill = async (req, res) => {
     });
 
     await newBill.save();
+    console.log(newBill)
     res.status(201).json({ success: true, bill: newBill });
   } catch (err) {
     console.error("Error creating bill:", err);
@@ -29,7 +31,7 @@ exports.createBill = async (req, res) => {
 };
 
 // Get all bills for a wallet
-exports.getBillsByWallet = async (req, res) => {
+const getBills = async (req, res) => {
   try {
     const { address } = req.params;
     const bills = await Bill.find({
@@ -44,7 +46,7 @@ exports.getBillsByWallet = async (req, res) => {
 };
 
 // Get a single bill
-exports.getBillById = async (req, res) => {
+const getBillById = async (req, res) => {
   try {
     const bill = await Bill.findById(req.params.id);
     if (!bill) return res.status(404).json({ success: false, message: "Bill not found" });
@@ -56,7 +58,7 @@ exports.getBillById = async (req, res) => {
 };
 
 // Mark participant as paid
-exports.markAsPaid = async (req, res) => {
+const updatePaymentStatus = async (req, res) => {
   try {
     const { billId } = req.params;
     const { address, txHash } = req.body;
@@ -76,4 +78,11 @@ exports.markAsPaid = async (req, res) => {
     console.error("Error marking payment:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
+};
+
+module.exports = {
+  createBill,
+  getBills,
+  getBillById,
+  updatePaymentStatus,
 };
