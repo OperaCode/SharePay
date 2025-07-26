@@ -65,7 +65,10 @@ const CreateBill = () => {
     try {
       setLoading(true);
       const res = await axios.post(`${BASE_URL}/bills/create-bill`, payload);
+
       console.log("Bill created:", res.data);
+      
+
       setSuccess("Bill created successfully!");
       setTitle("");
       setParticipants([{ name: "", address: "" }]);
@@ -74,9 +77,8 @@ const CreateBill = () => {
     } catch (err) {
       console.error("Error creating bill:", err?.response?.data || err.message);
       setError("Failed to create bill. Please check your input or try again.");
-    }finally{
-        setLoading(false);
-
+    } finally {
+      setLoading(false);
     }
   };
 

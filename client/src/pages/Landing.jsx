@@ -48,7 +48,7 @@ const Landing = () => {
 
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 md:px-8 py-4 bg-gray-950/50 backdrop-blur-md">
-        <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
+        <Link to="/" className="text-4xl p-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
           Split3
         </Link>
         <nav className="flex space-x-4 sm:space-x-6">
@@ -58,8 +58,8 @@ const Landing = () => {
           <Link to="/about" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
             About
           </Link>
-          <Link to="/connect" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
-            Connect Wallet
+          <Link to="/home" className="text-gray-300 hover:text-cyan-300 transition-colors duration-200">
+            Explore Split3
           </Link>
         </nav>
       </header>
@@ -80,7 +80,7 @@ const Landing = () => {
           className="text-lg sm:text-xl md:text-2xl text-center max-w-3xl mb-10 text-gray-300 leading-relaxed font-medium"
           variants={itemVariants}
         >
-          Seamlessly split ETH bills with your Web3 crew. Create shared bills, track payments, and settle directly from your crypto wallet.
+          Seamlessly split ETH bills with your Web3 crew/community. Create shared bills, track payments, and settle directly from your crypto wallet.
         </motion.p>
         <motion.div variants={itemVariants}>
           <Link

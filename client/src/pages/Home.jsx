@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import axios from "axios";
@@ -8,11 +8,14 @@ import { motion } from "framer-motion";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+
 const Home = () => {
   const { address, isConnected } = useAccount();
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -22,6 +25,7 @@ const Home = () => {
         const res = await axios.get(`${BASE_URL}/bills`);
         const data = Array.isArray(res.data) ? res.data : res.data.bills || [];
         setBills(res.data.bills);
+        console.log(res.data.bills)
       } catch (err) {
         console.error("Failed to fetch bills", err);
         setError("Failed to load bills. Please try again later.");
@@ -37,15 +41,21 @@ const Home = () => {
     hover: { scale: 1.02, transition: { duration: 0.3 } },
   };
 
+ 
+  const handleClick = ({billerId})=>{
+    navigate(`billers/${billerId}`)
+  }
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-blue-950 to-purple-950 text-white p-6 relative overflow-hidden">
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 md:px-8 py-8 bg-gray-950/50 backdrop-blur-md">
-        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
+        <h1 className="text-4xl p-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
           {" "}
           Split3
         </h1>
-        <nav className="flex space-x-4 sm:space-x-6">
+        <nav className="flex space-x-4 sm:space-x-6 p-2">
           
           <Link
             to="/about"
@@ -70,11 +80,11 @@ const Home = () => {
       </header>
 
 
-      <section className="m my-24 relative z-10">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
+      <section className="mt-28 relative z-10 p-2">
+        <h1 className=" sm:text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-600">
           Welcome to Split3 👋
         </h1>
-        <p className="text-gray-400 text-sm sm:text-base">
+        <p className="text-gray-400 sm:text-sm">
           {isConnected
             ? `Manage and track all your shared Web3 expenses, ${address?.slice(
                 0,
@@ -102,7 +112,7 @@ const Home = () => {
       </section>
 
       <section className="mb-10 relative z-10">
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-gray-200">
+        <h2 className=" sm:text-xl font-semibold mb-6 text-gray-200">
           🗂️ Recent Bills
         </h2>
 
@@ -131,8 +141,10 @@ const Home = () => {
                 variants={cardVariants}
                 whileHover="hover"
               >
-                <Link to={`/bill/${bill._id || bill.id}`} className="block">
-                  <h2 className="text-xl font-semibold text-cyan-300 mb-2">
+
+                {/* Bill Cards */}
+                <Link to={`/bills/${bill._id || bill.id}`} className="block">
+                  <h2 className="text-lg font-semibold text-cyan-300 mb-2">
                     {bill.title}
                   </h2>
                   <p className="text-gray-400">
@@ -145,7 +157,7 @@ const Home = () => {
                     Currency: {bill.currency || "ETH"}
                   </p>
                   <p className="text-gray-500">
-                    Participants:{" "}
+                    Participants:
                     {Array.isArray(bill.participants)
                       ? bill.participants
                           .map(
@@ -154,7 +166,6 @@ const Home = () => {
                               p.walletAddress?.slice(0, 6) + "..." ||
                               "Unknown"
                           )
-                          .join(", ")
                       : "N/A"}
                   </p>
                 </Link>
