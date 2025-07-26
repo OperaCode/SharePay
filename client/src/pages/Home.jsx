@@ -170,14 +170,7 @@ const Home = () => {
         )}
       </section>
 
-      <section className="mt-12 border-t border-gray-800 pt-8 relative z-10">
-        <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-200">
-          🔔 Notifications (Coming Soon)
-        </h2>
-        <p className="text-gray-500 text-sm sm:text-base">
-          You’ll get notified when a friend pays or when a bill is due.
-        </p>
-      </section>
+      
     </div>
   );
 };
