@@ -10,7 +10,7 @@ import { wagmiConfig, chains } from "./utils/wagmiConfig.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@rainbow-me/rainbowkit/styles.css";
 
-// ✅ Add this line
+
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
